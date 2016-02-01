@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:context="http://www.springframework.org/schema/context" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+	<description>Spring Configuration</description>
+
+
+	<bean name="zookeeperClient" class="cn.thinkjoy.sample.discovery.curator.CuratorFrameworkFactoryBean">
+		<property name="address" value="127.0.0.1:2181" />
+	</bean>
+
+
+	<bean name="serviceDiscovery" class="cn.thinkjoy.sample.discovery.ServiceDiscoveryFactoryBean">
+		<property name="client" ref="zookeeperClient" />
+	</bean>
+	
+	
+	
+	
+	
+	<bean name="userService" class="cn.thinkjoy.sample.service.UserServiceImpl"></bean>
+	
+
+	<bean name="userServiceExporter" class="cn.thinkjoy.sample.remoting.thrift.ThriftServiceExporter">
+		<property name="service" ref="userService" />
+		<property name="serviceInterface" value="cn.thinkjoy.sample.service.UserService" />
+		<property name="serviceDiscovery" ref="serviceDiscovery" />
+	</bean>
+</beans>
